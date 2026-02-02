@@ -105,7 +105,7 @@ imported_at: "2025-01-22T10:30:00Z"
 original_source: "session-observation"  # または "repo-analysis"
 ```
 
-## Skill Creator統合
+## スキルクリエイター統合
 
 Skill Creatorからインポートする場合：
 

@@ -42,7 +42,7 @@ python3 ~/.claude/skills/continuous-learning-v2/scripts/instinct-cli.py status
 📊 インスティンクトステータス
 ==================
 
-## Code Style (4 インスティンクト)
+## コードスタイル（4インスティンクト）
 
 ### prefer-functional-style
 トリガー: 新しい関数を書くとき
@@ -56,7 +56,7 @@ python3 ~/.claude/skills/continuous-learning-v2/scripts/instinct-cli.py status
 信頼度: ██████░░░░ 60%
 ソース: repo-analysis (github.com/acme/webapp)
 
-## Testing (2 インスティンクト)
+## テスト（2インスティンクト）
 
 ### test-first-workflow
 トリガー: 新機能を追加するとき
@@ -64,7 +64,7 @@ python3 ~/.claude/skills/continuous-learning-v2/scripts/instinct-cli.py status
 信頼度: █████████░ 90%
 ソース: session-observation
 
-## Workflow (3 インスティンクト)
+## ワークフロー（3インスティンクト）
 
 ### grep-before-edit
 トリガー: コードを変更するとき
