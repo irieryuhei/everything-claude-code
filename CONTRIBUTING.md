@@ -1,191 +1,191 @@
-# Contributing to Everything Claude Code
+# Everything Claude Code へのコントリビューション
 
-Thanks for wanting to contribute. This repo is meant to be a community resource for Claude Code users.
+コントリビューションに興味を持っていただきありがとうございます。このリポジトリはClaude Codeユーザーのためのコミュニティリソースとして意図されています。
 
-## What We're Looking For
+## 求めているもの
 
-### Agents
+### エージェント
 
-New agents that handle specific tasks well:
-- Language-specific reviewers (Python, Go, Rust)
-- Framework experts (Django, Rails, Laravel, Spring)
-- DevOps specialists (Kubernetes, Terraform, CI/CD)
-- Domain experts (ML pipelines, data engineering, mobile)
+特定のタスクを上手く処理する新しいエージェント：
+- 言語固有のレビュアー（Python、Go、Rust）
+- フレームワークエキスパート（Django、Rails、Laravel、Spring）
+- DevOpsスペシャリスト（Kubernetes、Terraform、CI/CD）
+- ドメインエキスパート（MLパイプライン、データエンジニアリング、モバイル）
 
-### Skills
+### スキル
 
-Workflow definitions and domain knowledge:
-- Language best practices
-- Framework patterns
-- Testing strategies
-- Architecture guides
-- Domain-specific knowledge
+ワークフロー定義とドメイン知識：
+- 言語のベストプラクティス
+- フレームワークパターン
+- テスト戦略
+- アーキテクチャガイド
+- ドメイン固有の知識
 
-### Commands
+### コマンド
 
-Slash commands that invoke useful workflows:
-- Deployment commands
-- Testing commands
-- Documentation commands
-- Code generation commands
+便利なワークフローを呼び出すスラッシュコマンド：
+- デプロイメントコマンド
+- テストコマンド
+- ドキュメントコマンド
+- コード生成コマンド
 
-### Hooks
+### フック
 
-Useful automations:
-- Linting/formatting hooks
-- Security checks
-- Validation hooks
-- Notification hooks
+便利な自動化：
+- リント/フォーマットフック
+- セキュリティチェック
+- バリデーションフック
+- 通知フック
 
-### Rules
+### ルール
 
-Always-follow guidelines:
-- Security rules
-- Code style rules
-- Testing requirements
-- Naming conventions
+常に従うガイドライン：
+- セキュリティルール
+- コードスタイルルール
+- テスト要件
+- 命名規則
 
-### MCP Configurations
+### MCP設定
 
-New or improved MCP server configs:
-- Database integrations
-- Cloud provider MCPs
-- Monitoring tools
-- Communication tools
+新規または改善されたMCPサーバー設定：
+- データベース統合
+- クラウドプロバイダーMCP
+- 監視ツール
+- コミュニケーションツール
 
 ---
 
-## How to Contribute
+## コントリビューション方法
 
-### 1. Fork the repo
+### 1. リポジトリをフォーク
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/everything-claude-code.git
 cd everything-claude-code
 ```
 
-### 2. Create a branch
+### 2. ブランチを作成
 
 ```bash
 git checkout -b add-python-reviewer
 ```
 
-### 3. Add your contribution
+### 3. コントリビューションを追加
 
-Place files in the appropriate directory:
-- `agents/` for new agents
-- `skills/` for skills (can be single .md or directory)
-- `commands/` for slash commands
-- `rules/` for rule files
-- `hooks/` for hook configurations
-- `mcp-configs/` for MCP server configs
+ファイルを適切なディレクトリに配置：
+- `agents/` - 新しいエージェント用
+- `skills/` - スキル用（単一の.mdまたはディレクトリ）
+- `commands/` - スラッシュコマンド用
+- `rules/` - ルールファイル用
+- `hooks/` - フック設定用
+- `mcp-configs/` - MCPサーバー設定用
 
-### 4. Follow the format
+### 4. フォーマットに従う
 
-**Agents** should have frontmatter:
+**エージェント**にはフロントマターが必要：
 
 ```markdown
 ---
 name: agent-name
-description: What it does
+description: 何をするか
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
-Instructions here...
+ここに指示を記述...
 ```
 
-**Skills** should be clear and actionable:
+**スキル**は明確で実行可能であるべき：
 
 ```markdown
-# Skill Name
+# スキル名
 
-## When to Use
-
-...
-
-## How It Works
+## 使用するタイミング
 
 ...
 
-## Examples
+## 仕組み
+
+...
+
+## 例
 
 ...
 ```
 
-**Commands** should explain what they do:
+**コマンド**は何をするかを説明すべき：
 
 ```markdown
 ---
-description: Brief description of command
+description: コマンドの簡単な説明
 ---
 
-# Command Name
+# コマンド名
 
-Detailed instructions...
+詳細な指示...
 ```
 
-**Hooks** should include descriptions:
+**フック**には説明を含めるべき：
 
 ```json
 {
   "matcher": "...",
   "hooks": [...],
-  "description": "What this hook does"
+  "description": "このフックが何をするか"
 }
 ```
 
-### 5. Test your contribution
+### 5. コントリビューションをテスト
 
-Make sure your config works with Claude Code before submitting.
+提出前にClaude Codeで設定が機能することを確認してください。
 
-### 6. Submit a PR
+### 6. PRを提出
 
 ```bash
 git add .
-git commit -m "Add Python code reviewer agent"
+git commit -m "Pythonコードレビュアーエージェントを追加"
 git push origin add-python-reviewer
 ```
 
-Then open a PR with:
-- What you added
-- Why it's useful
-- How you tested it
+その後、以下を含むPRを開いてください：
+- 何を追加したか
+- なぜ便利か
+- どのようにテストしたか
 
 ---
 
-## Guidelines
+## ガイドライン
 
-### Do
+### すべきこと
 
-- Keep configs focused and modular
-- Include clear descriptions
-- Test before submitting
-- Follow existing patterns
-- Document any dependencies
+- 設定を焦点を絞ったモジュール式に保つ
+- 明確な説明を含める
+- 提出前にテストする
+- 既存のパターンに従う
+- 依存関係をドキュメント化する
 
-### Don't
+### すべきでないこと
 
-- Include sensitive data (API keys, tokens, paths)
-- Add overly complex or niche configs
-- Submit untested configs
-- Create duplicate functionality
-- Add configs that require specific paid services without alternatives
-
----
-
-## File Naming
-
-- Use lowercase with hyphens: `python-reviewer.md`
-- Be descriptive: `tdd-workflow.md` not `workflow.md`
-- Match the agent/skill name to the filename
+- 機密データを含めない（APIキー、トークン、パス）
+- 過度に複雑またはニッチな設定を追加しない
+- テストされていない設定を提出しない
+- 重複する機能を作成しない
+- 代替手段なしで特定の有料サービスを必要とする設定を追加しない
 
 ---
 
-## Questions?
+## ファイル命名
 
-Open an issue or reach out on X: [@affaanmustafa](https://x.com/affaanmustafa)
+- 小文字とハイフンを使用：`python-reviewer.md`
+- 説明的に：`tdd-workflow.md`、`workflow.md`ではない
+- エージェント/スキル名をファイル名に一致させる
 
 ---
 
-Thanks for contributing. Let's build a great resource together.
+## 質問がありますか？
+
+issueを開くか、Xで連絡してください：[@affaanmustafa](https://x.com/affaanmustafa)
+
+---
+
+コントリビューションありがとうございます。一緒に素晴らしいリソースを作りましょう。

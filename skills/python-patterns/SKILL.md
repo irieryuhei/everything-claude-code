@@ -1,43 +1,43 @@
 ---
 name: python-patterns
-description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications.
+description: Pythonイディオム、PEP 8標準、型ヒント、堅牢で効率的かつ保守性の高いPythonアプリケーション構築のためのベストプラクティス。
 ---
 
-# Python Development Patterns
+# Python開発パターン
 
-Idiomatic Python patterns and best practices for building robust, efficient, and maintainable applications.
+堅牢で効率的かつ保守性の高いアプリケーションを構築するためのPythonイディオムとベストプラクティス。
 
-## When to Activate
+## 使用タイミング
 
-- Writing new Python code
-- Reviewing Python code
-- Refactoring existing Python code
-- Designing Python packages/modules
+- 新しいPythonコードを書く時
+- Pythonコードをレビューする時
+- 既存のPythonコードをリファクタリングする時
+- Pythonパッケージ/モジュールを設計する時
 
-## Core Principles
+## 基本原則
 
-### 1. Readability Counts
+### 1. 可読性が重要
 
-Python prioritizes readability. Code should be obvious and easy to understand.
+Pythonは可読性を優先します。コードは明確で理解しやすいものにすべきです。
 
 ```python
-# Good: Clear and readable
+# 良い例: 明確で読みやすい
 def get_active_users(users: list[User]) -> list[User]:
-    """Return only active users from the provided list."""
+    """提供されたリストからアクティブユーザーのみを返す。"""
     return [user for user in users if user.is_active]
 
 
-# Bad: Clever but confusing
+# 悪い例: 巧妙だが混乱を招く
 def get_active_users(u):
     return [x for x in u if x.a]
 ```
 
-### 2. Explicit is Better Than Implicit
+### 2. 暗黙より明示
 
-Avoid magic; be clear about what your code does.
+マジックを避け、コードが何をしているかを明確にしましょう。
 
 ```python
-# Good: Explicit configuration
+# 良い例: 明示的な設定
 import logging
 
 logging.basicConfig(
@@ -45,24 +45,24 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
-# Bad: Hidden side effects
+# 悪い例: 隠れた副作用
 import some_module
-some_module.setup()  # What does this do?
+some_module.setup()  # これは何をする？
 ```
 
-### 3. EAFP - Easier to Ask Forgiveness Than Permission
+### 3. EAFP - 許可を求めるより許しを請う方が簡単
 
-Python prefers exception handling over checking conditions.
+Pythonは条件チェックよりも例外処理を好みます。
 
 ```python
-# Good: EAFP style
+# 良い例: EAFPスタイル
 def get_value(dictionary: dict, key: str) -> Any:
     try:
         return dictionary[key]
     except KeyError:
         return default_value
 
-# Bad: LBYL (Look Before You Leap) style
+# 悪い例: LBYL（跳ぶ前に見る）スタイル
 def get_value(dictionary: dict, key: str) -> Any:
     if key in dictionary:
         return dictionary[key]
@@ -70,9 +70,9 @@ def get_value(dictionary: dict, key: str) -> Any:
         return default_value
 ```
 
-## Type Hints
+## 型ヒント
 
-### Basic Type Annotations
+### 基本的な型アノテーション
 
 ```python
 from typing import Optional, List, Dict, Any
@@ -82,65 +82,65 @@ def process_user(
     data: Dict[str, Any],
     active: bool = True
 ) -> Optional[User]:
-    """Process a user and return the updated User or None."""
+    """ユーザーを処理し、更新されたUserまたはNoneを返す。"""
     if not active:
         return None
     return User(user_id, data)
 ```
 
-### Modern Type Hints (Python 3.9+)
+### モダンな型ヒント（Python 3.9以降）
 
 ```python
-# Python 3.9+ - Use built-in types
+# Python 3.9以降 - 組み込み型を使用
 def process_items(items: list[str]) -> dict[str, int]:
     return {item: len(item) for item in items}
 
-# Python 3.8 and earlier - Use typing module
+# Python 3.8以前 - typingモジュールを使用
 from typing import List, Dict
 
 def process_items(items: List[str]) -> Dict[str, int]:
     return {item: len(item) for item in items}
 ```
 
-### Type Aliases and TypeVar
+### 型エイリアスとTypeVar
 
 ```python
 from typing import TypeVar, Union
 
-# Type alias for complex types
+# 複雑な型の型エイリアス
 JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
 
 def parse_json(data: str) -> JSON:
     return json.loads(data)
 
-# Generic types
+# ジェネリック型
 T = TypeVar('T')
 
 def first(items: list[T]) -> T | None:
-    """Return the first item or None if list is empty."""
+    """最初の要素を返す。リストが空の場合はNone。"""
     return items[0] if items else None
 ```
 
-### Protocol-Based Duck Typing
+### プロトコルベースのダックタイピング
 
 ```python
 from typing import Protocol
 
 class Renderable(Protocol):
     def render(self) -> str:
-        """Render the object to a string."""
+        """オブジェクトを文字列にレンダリングする。"""
 
 def render_all(items: list[Renderable]) -> str:
-    """Render all items that implement the Renderable protocol."""
+    """Renderableプロトコルを実装するすべてのアイテムをレンダリングする。"""
     return "\n".join(item.render() for item in items)
 ```
 
-## Error Handling Patterns
+## エラー処理パターン
 
-### Specific Exception Handling
+### 具体的な例外処理
 
 ```python
-# Good: Catch specific exceptions
+# 良い例: 具体的な例外をキャッチ
 def load_config(path: str) -> Config:
     try:
         with open(path) as f:
@@ -150,42 +150,42 @@ def load_config(path: str) -> Config:
     except json.JSONDecodeError as e:
         raise ConfigError(f"Invalid JSON in config: {path}") from e
 
-# Bad: Bare except
+# 悪い例: 裸のexcept
 def load_config(path: str) -> Config:
     try:
         with open(path) as f:
             return Config.from_json(f.read())
     except:
-        return None  # Silent failure!
+        return None  # サイレントな失敗！
 ```
 
-### Exception Chaining
+### 例外チェーン
 
 ```python
 def process_data(data: str) -> Result:
     try:
         parsed = json.loads(data)
     except json.JSONDecodeError as e:
-        # Chain exceptions to preserve the traceback
+        # トレースバックを保持するために例外をチェーン
         raise ValueError(f"Failed to parse data: {data}") from e
 ```
 
-### Custom Exception Hierarchy
+### カスタム例外階層
 
 ```python
 class AppError(Exception):
-    """Base exception for all application errors."""
+    """すべてのアプリケーションエラーの基底例外。"""
     pass
 
 class ValidationError(AppError):
-    """Raised when input validation fails."""
+    """入力バリデーションが失敗した時に発生。"""
     pass
 
 class NotFoundError(AppError):
-    """Raised when a requested resource is not found."""
+    """要求されたリソースが見つからない時に発生。"""
     pass
 
-# Usage
+# 使用例
 def get_user(user_id: str) -> User:
     user = db.find_user(user_id)
     if not user:
@@ -193,17 +193,17 @@ def get_user(user_id: str) -> User:
     return user
 ```
 
-## Context Managers
+## コンテキストマネージャ
 
-### Resource Management
+### リソース管理
 
 ```python
-# Good: Using context managers
+# 良い例: コンテキストマネージャを使用
 def process_file(path: str) -> str:
     with open(path, 'r') as f:
         return f.read()
 
-# Bad: Manual resource management
+# 悪い例: 手動でリソース管理
 def process_file(path: str) -> str:
     f = open(path, 'r')
     try:
@@ -212,25 +212,25 @@ def process_file(path: str) -> str:
         f.close()
 ```
 
-### Custom Context Managers
+### カスタムコンテキストマネージャ
 
 ```python
 from contextlib import contextmanager
 
 @contextmanager
 def timer(name: str):
-    """Context manager to time a block of code."""
+    """コードブロックの実行時間を計測するコンテキストマネージャ。"""
     start = time.perf_counter()
     yield
     elapsed = time.perf_counter() - start
     print(f"{name} took {elapsed:.4f} seconds")
 
-# Usage
+# 使用例
 with timer("data processing"):
     process_large_dataset()
 ```
 
-### Context Manager Classes
+### コンテキストマネージャクラス
 
 ```python
 class DatabaseTransaction:
@@ -246,33 +246,33 @@ class DatabaseTransaction:
             self.connection.commit()
         else:
             self.connection.rollback()
-        return False  # Don't suppress exceptions
+        return False  # 例外を抑制しない
 
-# Usage
+# 使用例
 with DatabaseTransaction(conn):
     user = conn.create_user(user_data)
     conn.create_profile(user.id, profile_data)
 ```
 
-## Comprehensions and Generators
+## 内包表記とジェネレータ
 
-### List Comprehensions
+### リスト内包表記
 
 ```python
-# Good: List comprehension for simple transformations
+# 良い例: 単純な変換にリスト内包表記
 names = [user.name for user in users if user.is_active]
 
-# Bad: Manual loop
+# 悪い例: 手動ループ
 names = []
 for user in users:
     if user.is_active:
         names.append(user.name)
 
-# Complex comprehensions should be expanded
-# Bad: Too complex
+# 複雑な内包表記は展開すべき
+# 悪い例: 複雑すぎる
 result = [x * 2 for x in items if x > 0 if x % 2 == 0]
 
-# Good: Use a generator function
+# 良い例: ジェネレータ関数を使用
 def filter_and_transform(items: Iterable[int]) -> list[int]:
     result = []
     for x in items:
@@ -281,33 +281,33 @@ def filter_and_transform(items: Iterable[int]) -> list[int]:
     return result
 ```
 
-### Generator Expressions
+### ジェネレータ式
 
 ```python
-# Good: Generator for lazy evaluation
+# 良い例: 遅延評価のためのジェネレータ
 total = sum(x * x for x in range(1_000_000))
 
-# Bad: Creates large intermediate list
+# 悪い例: 大きな中間リストを作成
 total = sum([x * x for x in range(1_000_000)])
 ```
 
-### Generator Functions
+### ジェネレータ関数
 
 ```python
 def read_large_file(path: str) -> Iterator[str]:
-    """Read a large file line by line."""
+    """大きなファイルを1行ずつ読み取る。"""
     with open(path) as f:
         for line in f:
             yield line.strip()
 
-# Usage
+# 使用例
 for line in read_large_file("huge.txt"):
     process(line)
 ```
 
-## Data Classes and Named Tuples
+## データクラスとNamedTuple
 
-### Data Classes
+### データクラス
 
 ```python
 from dataclasses import dataclass, field
@@ -315,14 +315,14 @@ from datetime import datetime
 
 @dataclass
 class User:
-    """User entity with automatic __init__, __repr__, and __eq__."""
+    """自動的に__init__、__repr__、__eq__が生成されるUserエンティティ。"""
     id: str
     name: str
     email: str
     created_at: datetime = field(default_factory=datetime.now)
     is_active: bool = True
 
-# Usage
+# 使用例
 user = User(
     id="123",
     name="Alice",
@@ -330,7 +330,7 @@ user = User(
 )
 ```
 
-### Data Classes with Validation
+### バリデーション付きデータクラス
 
 ```python
 @dataclass
@@ -339,43 +339,43 @@ class User:
     age: int
 
     def __post_init__(self):
-        # Validate email format
+        # メールフォーマットのバリデーション
         if "@" not in self.email:
             raise ValueError(f"Invalid email: {self.email}")
-        # Validate age range
+        # 年齢範囲のバリデーション
         if self.age < 0 or self.age > 150:
             raise ValueError(f"Invalid age: {self.age}")
 ```
 
-### Named Tuples
+### NamedTuple
 
 ```python
 from typing import NamedTuple
 
 class Point(NamedTuple):
-    """Immutable 2D point."""
+    """イミュータブルな2Dポイント。"""
     x: float
     y: float
 
     def distance(self, other: 'Point') -> float:
         return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
 
-# Usage
+# 使用例
 p1 = Point(0, 0)
 p2 = Point(3, 4)
 print(p1.distance(p2))  # 5.0
 ```
 
-## Decorators
+## デコレータ
 
-### Function Decorators
+### 関数デコレータ
 
 ```python
 import functools
 import time
 
 def timer(func: Callable) -> Callable:
-    """Decorator to time function execution."""
+    """関数の実行時間を計測するデコレータ。"""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
@@ -389,14 +389,14 @@ def timer(func: Callable) -> Callable:
 def slow_function():
     time.sleep(1)
 
-# slow_function() prints: slow_function took 1.0012s
+# slow_function()は出力: slow_function took 1.0012s
 ```
 
-### Parameterized Decorators
+### パラメータ付きデコレータ
 
 ```python
 def repeat(times: int):
-    """Decorator to repeat a function multiple times."""
+    """関数を複数回繰り返すデコレータ。"""
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -411,14 +411,14 @@ def repeat(times: int):
 def greet(name: str) -> str:
     return f"Hello, {name}!"
 
-# greet("Alice") returns ["Hello, Alice!", "Hello, Alice!", "Hello, Alice!"]
+# greet("Alice")は["Hello, Alice!", "Hello, Alice!", "Hello, Alice!"]を返す
 ```
 
-### Class-Based Decorators
+### クラスベースのデコレータ
 
 ```python
 class CountCalls:
-    """Decorator that counts how many times a function is called."""
+    """関数が何回呼び出されたかをカウントするデコレータ。"""
     def __init__(self, func: Callable):
         functools.update_wrapper(self, func)
         self.func = func
@@ -433,25 +433,25 @@ class CountCalls:
 def process():
     pass
 
-# Each call to process() prints the call count
+# process()を呼び出すたびに呼び出し回数が出力される
 ```
 
-## Concurrency Patterns
+## 並行処理パターン
 
-### Threading for I/O-Bound Tasks
+### I/Oバウンドタスクにはスレッディング
 
 ```python
 import concurrent.futures
 import threading
 
 def fetch_url(url: str) -> str:
-    """Fetch a URL (I/O-bound operation)."""
+    """URLをフェッチする（I/Oバウンド操作）。"""
     import urllib.request
     with urllib.request.urlopen(url) as response:
         return response.read().decode()
 
 def fetch_all_urls(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently using threads."""
+    """スレッドを使用して複数のURLを並行フェッチ。"""
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in urls}
         results = {}
@@ -464,42 +464,42 @@ def fetch_all_urls(urls: list[str]) -> dict[str, str]:
     return results
 ```
 
-### Multiprocessing for CPU-Bound Tasks
+### CPUバウンドタスクにはマルチプロセッシング
 
 ```python
 def process_data(data: list[int]) -> int:
-    """CPU-intensive computation."""
+    """CPU集約的な計算。"""
     return sum(x ** 2 for x in data)
 
 def process_all(datasets: list[list[int]]) -> list[int]:
-    """Process multiple datasets using multiple processes."""
+    """複数のプロセスを使用して複数のデータセットを処理。"""
     with concurrent.futures.ProcessPoolExecutor() as executor:
         results = list(executor.map(process_data, datasets))
     return results
 ```
 
-### Async/Await for Concurrent I/O
+### 並行I/OにはAsync/Await
 
 ```python
 import asyncio
 
 async def fetch_async(url: str) -> str:
-    """Fetch a URL asynchronously."""
+    """URLを非同期でフェッチ。"""
     import aiohttp
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             return await response.text()
 
 async def fetch_all(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently."""
+    """複数のURLを並行フェッチ。"""
     tasks = [fetch_async(url) for url in urls]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     return dict(zip(urls, results))
 ```
 
-## Package Organization
+## パッケージ構成
 
-### Standard Project Layout
+### 標準プロジェクトレイアウト
 
 ```
 myproject/
@@ -526,10 +526,10 @@ myproject/
 └── .gitignore
 ```
 
-### Import Conventions
+### インポート規則
 
 ```python
-# Good: Import order - stdlib, third-party, local
+# 良い例: インポート順序 - 標準ライブラリ、サードパーティ、ローカル
 import os
 import sys
 from pathlib import Path
@@ -540,37 +540,37 @@ from fastapi import FastAPI
 from mypackage.models import User
 from mypackage.utils import format_name
 
-# Good: Use isort for automatic import sorting
+# 良い例: 自動インポートソートにisortを使用
 # pip install isort
 ```
 
-### __init__.py for Package Exports
+### パッケージエクスポート用__init__.py
 
 ```python
 # mypackage/__init__.py
-"""mypackage - A sample Python package."""
+"""mypackage - サンプルPythonパッケージ。"""
 
 __version__ = "1.0.0"
 
-# Export main classes/functions at package level
+# パッケージレベルでメインクラス/関数をエクスポート
 from mypackage.models import User, Post
 from mypackage.utils import format_name
 
 __all__ = ["User", "Post", "format_name"]
 ```
 
-## Memory and Performance
+## メモリとパフォーマンス
 
-### Using __slots__ for Memory Efficiency
+### メモリ効率のための__slots__使用
 
 ```python
-# Bad: Regular class uses __dict__ (more memory)
+# 悪い例: 通常のクラスは__dict__を使用（メモリ消費大）
 class Point:
     def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
 
-# Good: __slots__ reduces memory usage
+# 良い例: __slots__でメモリ使用量を削減
 class Point:
     __slots__ = ['x', 'y']
 
@@ -579,33 +579,33 @@ class Point:
         self.y = y
 ```
 
-### Generator for Large Data
+### 大きなデータにはジェネレータ
 
 ```python
-# Bad: Returns full list in memory
+# 悪い例: 完全なリストをメモリに返す
 def read_lines(path: str) -> list[str]:
     with open(path) as f:
         return [line.strip() for line in f]
 
-# Good: Yields lines one at a time
+# 良い例: 1行ずつyield
 def read_lines(path: str) -> Iterator[str]:
     with open(path) as f:
         for line in f:
             yield line.strip()
 ```
 
-### Avoid String Concatenation in Loops
+### ループ内での文字列連結を避ける
 
 ```python
-# Bad: O(n²) due to string immutability
+# 悪い例: 文字列の不変性によりO(n^2)
 result = ""
 for item in items:
     result += str(item)
 
-# Good: O(n) using join
+# 良い例: joinを使用してO(n)
 result = "".join(str(item) for item in items)
 
-# Good: Using StringIO for building
+# 良い例: StringIOを使用して構築
 from io import StringIO
 
 buffer = StringIO()
@@ -614,34 +614,34 @@ for item in items:
 result = buffer.getvalue()
 ```
 
-## Python Tooling Integration
+## Pythonツーリング統合
 
-### Essential Commands
+### 必須コマンド
 
 ```bash
-# Code formatting
+# コードフォーマット
 black .
 isort .
 
-# Linting
+# リンティング
 ruff check .
 pylint mypackage/
 
-# Type checking
+# 型チェック
 mypy .
 
-# Testing
+# テスト
 pytest --cov=mypackage --cov-report=html
 
-# Security scanning
+# セキュリティスキャン
 bandit -r .
 
-# Dependency management
+# 依存関係管理
 pip-audit
 safety check
 ```
 
-### pyproject.toml Configuration
+### pyproject.toml設定
 
 ```toml
 [project]
@@ -681,69 +681,69 @@ testpaths = ["tests"]
 addopts = "--cov=mypackage --cov-report=term-missing"
 ```
 
-## Quick Reference: Python Idioms
+## クイックリファレンス: Pythonイディオム
 
-| Idiom | Description |
+| イディオム | 説明 |
 |-------|-------------|
-| EAFP | Easier to Ask Forgiveness than Permission |
-| Context managers | Use `with` for resource management |
-| List comprehensions | For simple transformations |
-| Generators | For lazy evaluation and large datasets |
-| Type hints | Annotate function signatures |
-| Dataclasses | For data containers with auto-generated methods |
-| `__slots__` | For memory optimization |
-| f-strings | For string formatting (Python 3.6+) |
-| `pathlib.Path` | For path operations (Python 3.4+) |
-| `enumerate` | For index-element pairs in loops |
+| EAFP | 許可を求めるより許しを請う方が簡単 |
+| コンテキストマネージャ | リソース管理には`with`を使用 |
+| リスト内包表記 | 単純な変換用 |
+| ジェネレータ | 遅延評価と大きなデータセット用 |
+| 型ヒント | 関数シグネチャにアノテーション |
+| データクラス | 自動生成メソッドを持つデータコンテナ用 |
+| `__slots__` | メモリ最適化用 |
+| f-strings | 文字列フォーマット用（Python 3.6以降） |
+| `pathlib.Path` | パス操作用（Python 3.4以降） |
+| `enumerate` | ループでのインデックス-要素ペア用 |
 
-## Anti-Patterns to Avoid
+## 避けるべきアンチパターン
 
 ```python
-# Bad: Mutable default arguments
+# 悪い例: ミュータブルなデフォルト引数
 def append_to(item, items=[]):
     items.append(item)
     return items
 
-# Good: Use None and create new list
+# 良い例: Noneを使用して新しいリストを作成
 def append_to(item, items=None):
     if items is None:
         items = []
     items.append(item)
     return items
 
-# Bad: Checking type with type()
+# 悪い例: type()で型をチェック
 if type(obj) == list:
     process(obj)
 
-# Good: Use isinstance
+# 良い例: isinstanceを使用
 if isinstance(obj, list):
     process(obj)
 
-# Bad: Comparing to None with ==
+# 悪い例: ==でNoneと比較
 if value == None:
     process()
 
-# Good: Use is
+# 良い例: isを使用
 if value is None:
     process()
 
-# Bad: from module import *
+# 悪い例: from module import *
 from os.path import *
 
-# Good: Explicit imports
+# 良い例: 明示的インポート
 from os.path import join, exists
 
-# Bad: Bare except
+# 悪い例: 裸のexcept
 try:
     risky_operation()
 except:
     pass
 
-# Good: Specific exception
+# 良い例: 具体的な例外
 try:
     risky_operation()
 except SpecificError as e:
     logger.error(f"Operation failed: {e}")
 ```
 
-__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+__覚えておくこと__: Pythonコードは読みやすく、明示的で、最小驚きの原則に従うべきです。迷った時は、巧妙さよりも明確さを優先しましょう。

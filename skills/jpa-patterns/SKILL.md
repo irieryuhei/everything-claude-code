@@ -1,13 +1,13 @@
 ---
 name: jpa-patterns
-description: JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, auditing, indexing, pagination, and pooling in Spring Boot.
+description: Spring BootにおけるJPA/Hibernateパターン：エンティティ設計、リレーション、クエリ最適化、トランザクション、監査、インデックス、ページネーション、プーリング。
 ---
 
-# JPA/Hibernate Patterns
+# JPA/Hibernateパターン
 
-Use for data modeling, repositories, and performance tuning in Spring Boot.
+Spring Bootでのデータモデリング、リポジトリ、パフォーマンスチューニングに使用。
 
-## Entity Design
+## エンティティ設計
 
 ```java
 @Entity
@@ -33,29 +33,29 @@ public class MarketEntity {
 }
 ```
 
-Enable auditing:
+監査を有効にする：
 ```java
 @Configuration
 @EnableJpaAuditing
 class JpaConfig {}
 ```
 
-## Relationships and N+1 Prevention
+## リレーションとN+1問題の防止
 
 ```java
 @OneToMany(mappedBy = "market", cascade = CascadeType.ALL, orphanRemoval = true)
 private List<PositionEntity> positions = new ArrayList<>();
 ```
 
-- Default to lazy loading; use `JOIN FETCH` in queries when needed
-- Avoid `EAGER` on collections; use DTO projections for read paths
+- デフォルトは遅延ロード；必要に応じてクエリで`JOIN FETCH`を使用
+- コレクションには`EAGER`を避ける；読み取りパスにはDTOプロジェクションを使用
 
 ```java
 @Query("select m from MarketEntity m left join fetch m.positions where m.id = :id")
 Optional<MarketEntity> findWithPositions(@Param("id") Long id);
 ```
 
-## Repository Patterns
+## リポジトリパターン
 
 ```java
 public interface MarketRepository extends JpaRepository<MarketEntity, Long> {
@@ -66,7 +66,7 @@ public interface MarketRepository extends JpaRepository<MarketEntity, Long> {
 }
 ```
 
-- Use projections for lightweight queries:
+- 軽量なクエリにはプロジェクションを使用：
 ```java
 public interface MarketSummary {
   Long getId();
@@ -76,11 +76,11 @@ public interface MarketSummary {
 Page<MarketSummary> findAllBy(Pageable pageable);
 ```
 
-## Transactions
+## トランザクション
 
-- Annotate service methods with `@Transactional`
-- Use `@Transactional(readOnly = true)` for read paths to optimize
-- Choose propagation carefully; avoid long-running transactions
+- サービスメソッドには`@Transactional`を付与
+- 読み取りパスには`@Transactional(readOnly = true)`を使用して最適化
+- プロパゲーションは慎重に選択；長時間実行トランザクションを避ける
 
 ```java
 @Transactional
@@ -92,25 +92,25 @@ public Market updateStatus(Long id, MarketStatus status) {
 }
 ```
 
-## Pagination
+## ページネーション
 
 ```java
 PageRequest page = PageRequest.of(pageNumber, pageSize, Sort.by("createdAt").descending());
 Page<MarketEntity> markets = repo.findByStatus(MarketStatus.ACTIVE, page);
 ```
 
-For cursor-like pagination, include `id > :lastId` in JPQL with ordering.
+カーソルベースのページネーションには、JPQLで`id > :lastId`を順序付きで使用。
 
-## Indexing and Performance
+## インデックスとパフォーマンス
 
-- Add indexes for common filters (`status`, `slug`, foreign keys)
-- Use composite indexes matching query patterns (`status, created_at`)
-- Avoid `select *`; project only needed columns
-- Batch writes with `saveAll` and `hibernate.jdbc.batch_size`
+- 一般的なフィルター（`status`、`slug`、外部キー）にインデックスを追加
+- クエリパターンに合わせた複合インデックスを使用（`status, created_at`）
+- `select *`を避ける；必要なカラムのみを射影
+- `saveAll`と`hibernate.jdbc.batch_size`でバッチ書き込み
 
-## Connection Pooling (HikariCP)
+## コネクションプーリング（HikariCP）
 
-Recommended properties:
+推奨プロパティ：
 ```
 spring.datasource.hikari.maximum-pool-size=20
 spring.datasource.hikari.minimum-idle=5
@@ -118,24 +118,24 @@ spring.datasource.hikari.connection-timeout=30000
 spring.datasource.hikari.validation-timeout=5000
 ```
 
-For PostgreSQL LOB handling, add:
+PostgreSQLのLOB処理には以下を追加：
 ```
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 ```
 
-## Caching
+## キャッシング
 
-- 1st-level cache is per EntityManager; avoid keeping entities across transactions
-- For read-heavy entities, consider second-level cache cautiously; validate eviction strategy
+- 1次キャッシュはEntityManagerごと；トランザクション間でエンティティを保持しない
+- 読み取り頻度の高いエンティティには2次キャッシュを慎重に検討；エビクション戦略を検証
 
-## Migrations
+## マイグレーション
 
-- Use Flyway or Liquibase; never rely on Hibernate auto DDL in production
-- Keep migrations idempotent and additive; avoid dropping columns without plan
+- FlywayまたはLiquibaseを使用；本番環境ではHibernate自動DDLに依存しない
+- マイグレーションは冪等で追加的に；計画なしにカラムを削除しない
 
-## Testing Data Access
+## データアクセスのテスト
 
-- Prefer `@DataJpaTest` with Testcontainers to mirror production
-- Assert SQL efficiency using logs: set `logging.level.org.hibernate.SQL=DEBUG` and `logging.level.org.hibernate.orm.jdbc.bind=TRACE` for parameter values
+- Testcontainersを使用した`@DataJpaTest`で本番環境をミラーリング
+- ログでSQL効率を確認：`logging.level.org.hibernate.SQL=DEBUG`と`logging.level.org.hibernate.orm.jdbc.bind=TRACE`（パラメータ値用）
 
-**Remember**: Keep entities lean, queries intentional, and transactions short. Prevent N+1 with fetch strategies and projections, and index for your read/write paths.
+**覚えておくこと**: エンティティはリーンに、クエリは意図的に、トランザクションは短く。フェッチ戦略とプロジェクションでN+1を防止し、読み取り/書き込みパスに合わせてインデックスを作成する。

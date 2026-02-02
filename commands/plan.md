@@ -1,113 +1,113 @@
 ---
-description: Restate requirements, assess risks, and create step-by-step implementation plan. WAIT for user CONFIRM before touching any code.
+description: 要件を再確認し、リスクを評価し、ステップバイステップの実装計画を作成します。コードに触れる前にユーザーの確認を待ちます。
 ---
 
-# Plan Command
+# Planコマンド
 
-This command invokes the **planner** agent to create a comprehensive implementation plan before writing any code.
+このコマンドは**planner**エージェントを呼び出して、コードを書く前に包括的な実装計画を作成します。
 
-## What This Command Does
+## このコマンドの機能
 
-1. **Restate Requirements** - Clarify what needs to be built
-2. **Identify Risks** - Surface potential issues and blockers
-3. **Create Step Plan** - Break down implementation into phases
-4. **Wait for Confirmation** - MUST receive user approval before proceeding
+1. **要件の再確認** - 何を構築する必要があるかを明確化
+2. **リスクの特定** - 潜在的な問題やブロッカーを表面化
+3. **ステップ計画の作成** - 実装をフェーズに分解
+4. **確認を待機** - 進行前にユーザーの承認を必ず受ける
 
-## When to Use
+## 使用するタイミング
 
-Use `/plan` when:
-- Starting a new feature
-- Making significant architectural changes
-- Working on complex refactoring
-- Multiple files/components will be affected
-- Requirements are unclear or ambiguous
+以下の場合に `/plan` を使用：
+- 新機能の開始時
+- 重要なアーキテクチャ変更時
+- 複雑なリファクタリングに取り組む時
+- 複数のファイル/コンポーネントが影響を受ける時
+- 要件が不明確または曖昧な時
 
-## How It Works
+## 動作方法
 
-The planner agent will:
+plannerエージェントは以下を実行します：
 
-1. **Analyze the request** and restate requirements in clear terms
-2. **Break down into phases** with specific, actionable steps
-3. **Identify dependencies** between components
-4. **Assess risks** and potential blockers
-5. **Estimate complexity** (High/Medium/Low)
-6. **Present the plan** and WAIT for your explicit confirmation
+1. **リクエストを分析**し、要件を明確な言葉で再確認
+2. **フェーズに分解**（具体的でアクション可能なステップ）
+3. **依存関係を特定**（コンポーネント間の関係）
+4. **リスクを評価**（潜在的なブロッカー）
+5. **複雑さを見積もり**（高/中/低）
+6. **計画を提示**し、明示的な確認を待機
 
-## Example Usage
+## 使用例
 
 ```
-User: /plan I need to add real-time notifications when markets resolve
+ユーザー: /plan マーケットが決済されたときにリアルタイム通知を追加する必要があります
 
-Agent (planner):
-# Implementation Plan: Real-Time Market Resolution Notifications
+エージェント (planner):
+# 実装計画: リアルタイムマーケット決済通知
 
-## Requirements Restatement
-- Send notifications to users when markets they're watching resolve
-- Support multiple notification channels (in-app, email, webhook)
-- Ensure notifications are delivered reliably
-- Include market outcome and user's position result
+## 要件の再確認
+- ユーザーがウォッチしているマーケットが決済されたときに通知を送信
+- 複数の通知チャネルをサポート（アプリ内、メール、Webhook）
+- 通知が確実に配信されることを保証
+- マーケットの結果とユーザーのポジション結果を含める
 
-## Implementation Phases
+## 実装フェーズ
 
-### Phase 1: Database Schema
-- Add notifications table with columns: id, user_id, market_id, type, status, created_at
-- Add user_notification_preferences table for channel preferences
-- Create indexes on user_id and market_id for performance
+### フェーズ1: データベーススキーマ
+- 通知テーブルを追加（カラム: id, user_id, market_id, type, status, created_at）
+- チャネル設定用のuser_notification_preferencesテーブルを追加
+- パフォーマンスのためにuser_idとmarket_idにインデックスを作成
 
-### Phase 2: Notification Service
-- Create notification service in lib/notifications.ts
-- Implement notification queue using BullMQ/Redis
-- Add retry logic for failed deliveries
-- Create notification templates
+### フェーズ2: 通知サービス
+- lib/notifications.tsに通知サービスを作成
+- BullMQ/Redisを使用した通知キューを実装
+- 失敗した配信のリトライロジックを追加
+- 通知テンプレートを作成
 
-### Phase 3: Integration Points
-- Hook into market resolution logic (when status changes to "resolved")
-- Query all users with positions in market
-- Enqueue notifications for each user
+### フェーズ3: 統合ポイント
+- マーケット決済ロジックにフック（ステータスが「resolved」に変更されたとき）
+- マーケットにポジションを持つすべてのユーザーをクエリ
+- 各ユーザーの通知をエンキュー
 
-### Phase 4: Frontend Components
-- Create NotificationBell component in header
-- Add NotificationList modal
-- Implement real-time updates via Supabase subscriptions
-- Add notification preferences page
+### フェーズ4: フロントエンドコンポーネント
+- ヘッダーにNotificationBellコンポーネントを作成
+- NotificationListモーダルを追加
+- Supabaseサブスクリプション経由でリアルタイム更新を実装
+- 通知設定ページを追加
 
-## Dependencies
-- Redis (for queue)
-- Email service (SendGrid/Resend)
-- Supabase real-time subscriptions
+## 依存関係
+- Redis（キュー用）
+- メールサービス（SendGrid/Resend）
+- Supabaseリアルタイムサブスクリプション
 
-## Risks
-- HIGH: Email deliverability (SPF/DKIM required)
-- MEDIUM: Performance with 1000+ users per market
-- MEDIUM: Notification spam if markets resolve frequently
-- LOW: Real-time subscription overhead
+## リスク
+- 高: メール配信可能性（SPF/DKIM必須）
+- 中: マーケットあたり1000+ユーザーでのパフォーマンス
+- 中: マーケットが頻繁に決済される場合の通知スパム
+- 低: リアルタイムサブスクリプションのオーバーヘッド
 
-## Estimated Complexity: MEDIUM
-- Backend: 4-6 hours
-- Frontend: 3-4 hours
-- Testing: 2-3 hours
-- Total: 9-13 hours
+## 見積もり複雑さ: 中
+- バックエンド: 4-6時間
+- フロントエンド: 3-4時間
+- テスト: 2-3時間
+- 合計: 9-13時間
 
-**WAITING FOR CONFIRMATION**: Proceed with this plan? (yes/no/modify)
+**確認を待機中**: この計画で進めますか？（yes/no/modify）
 ```
 
-## Important Notes
+## 重要な注意事項
 
-**CRITICAL**: The planner agent will **NOT** write any code until you explicitly confirm the plan with "yes" or "proceed" or similar affirmative response.
+**クリティカル**: plannerエージェントは、「yes」「proceed」などの肯定的な返答で明示的に計画を確認するまで、**コードを書きません**。
 
-If you want changes, respond with:
-- "modify: [your changes]"
-- "different approach: [alternative]"
-- "skip phase 2 and do phase 3 first"
+変更が必要な場合は、以下のように返答してください：
+- 「modify: [変更内容]」
+- 「different approach: [代替案]」
+- 「フェーズ2をスキップしてフェーズ3を先に」
 
-## Integration with Other Commands
+## 他のコマンドとの統合
 
-After planning:
-- Use `/tdd` to implement with test-driven development
-- Use `/build-and-fix` if build errors occur
-- Use `/code-review` to review completed implementation
+計画後：
+- `/tdd` を使用してテスト駆動開発で実装
+- ビルドエラーが発生した場合は `/build-and-fix` を使用
+- `/code-review` を使用して完成した実装をレビュー
 
-## Related Agents
+## 関連エージェント
 
-This command invokes the `planner` agent located at:
+このコマンドは以下に配置された `planner` エージェントを呼び出します：
 `~/.claude/agents/planner.md`

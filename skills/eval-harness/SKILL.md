@@ -1,227 +1,227 @@
 ---
 name: eval-harness
-description: Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles
+description: eval駆動開発（EDD）原則を実装するClaude Codeセッション用の正式な評価フレームワーク
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
-# Eval Harness Skill
+# 評価ハーネススキル
 
-A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.
+eval駆動開発（EDD）原則を実装するClaude Codeセッション用の正式な評価フレームワーク。
 
-## Philosophy
+## 哲学
 
-Eval-Driven Development treats evals as the "unit tests of AI development":
-- Define expected behavior BEFORE implementation
-- Run evals continuously during development
-- Track regressions with each change
-- Use pass@k metrics for reliability measurement
+Eval駆動開発はevalsを「AI開発のユニットテスト」として扱います：
+- 実装前に期待される動作を定義
+- 開発中に継続的にevalsを実行
+- 各変更でリグレッションを追跡
+- 信頼性測定にpass@kメトリクスを使用
 
-## Eval Types
+## Evalタイプ
 
-### Capability Evals
-Test if Claude can do something it couldn't before:
+### 能力Eval
+Claudeが以前できなかったことができるかをテスト：
 ```markdown
 [CAPABILITY EVAL: feature-name]
-Task: Description of what Claude should accomplish
+Task: Claudeが達成すべきことの説明
 Success Criteria:
-  - [ ] Criterion 1
-  - [ ] Criterion 2
-  - [ ] Criterion 3
-Expected Output: Description of expected result
+  - [ ] 基準1
+  - [ ] 基準2
+  - [ ] 基準3
+Expected Output: 期待される結果の説明
 ```
 
-### Regression Evals
-Ensure changes don't break existing functionality:
+### リグレッションEval
+変更が既存の機能を壊さないことを確認：
 ```markdown
 [REGRESSION EVAL: feature-name]
-Baseline: SHA or checkpoint name
+Baseline: SHAまたはチェックポイント名
 Tests:
   - existing-test-1: PASS/FAIL
   - existing-test-2: PASS/FAIL
   - existing-test-3: PASS/FAIL
-Result: X/Y passed (previously Y/Y)
+Result: X/Y passed (以前はY/Y)
 ```
 
-## Grader Types
+## グレーダータイプ
 
-### 1. Code-Based Grader
-Deterministic checks using code:
+### 1. コードベースグレーダー
+コードを使用した決定論的チェック：
 ```bash
-# Check if file contains expected pattern
+# ファイルに期待されるパターンが含まれているかチェック
 grep -q "export function handleAuth" src/auth.ts && echo "PASS" || echo "FAIL"
 
-# Check if tests pass
+# テストがパスするかチェック
 npm test -- --testPathPattern="auth" && echo "PASS" || echo "FAIL"
 
-# Check if build succeeds
+# ビルドが成功するかチェック
 npm run build && echo "PASS" || echo "FAIL"
 ```
 
-### 2. Model-Based Grader
-Use Claude to evaluate open-ended outputs:
+### 2. モデルベースグレーダー
+オープンエンドな出力を評価するためにClaudeを使用：
 ```markdown
 [MODEL GRADER PROMPT]
-Evaluate the following code change:
-1. Does it solve the stated problem?
-2. Is it well-structured?
-3. Are edge cases handled?
-4. Is error handling appropriate?
+以下のコード変更を評価してください：
+1. 述べられた問題を解決していますか？
+2. 構造は良好ですか？
+3. エッジケースは処理されていますか？
+4. エラーハンドリングは適切ですか？
 
-Score: 1-5 (1=poor, 5=excellent)
-Reasoning: [explanation]
+Score: 1-5（1=悪い、5=優秀）
+Reasoning: [説明]
 ```
 
-### 3. Human Grader
-Flag for manual review:
+### 3. 人間グレーダー
+手動レビュー用にフラグを立てる：
 ```markdown
 [HUMAN REVIEW REQUIRED]
-Change: Description of what changed
-Reason: Why human review is needed
+Change: 変更内容の説明
+Reason: 人間レビューが必要な理由
 Risk Level: LOW/MEDIUM/HIGH
 ```
 
-## Metrics
+## メトリクス
 
 ### pass@k
-"At least one success in k attempts"
-- pass@1: First attempt success rate
-- pass@3: Success within 3 attempts
-- Typical target: pass@3 > 90%
+「k回の試行で少なくとも1回成功」
+- pass@1: 初回試行成功率
+- pass@3: 3回以内の試行での成功
+- 典型的な目標: pass@3 > 90%
 
 ### pass^k
-"All k trials succeed"
-- Higher bar for reliability
-- pass^3: 3 consecutive successes
-- Use for critical paths
+「k回すべての試行が成功」
+- 信頼性のより高い基準
+- pass^3: 3回連続成功
+- 重要なパスに使用
 
-## Eval Workflow
+## Evalワークフロー
 
-### 1. Define (Before Coding)
+### 1. 定義（コーディング前）
 ```markdown
 ## EVAL DEFINITION: feature-xyz
 
-### Capability Evals
-1. Can create new user account
-2. Can validate email format
-3. Can hash password securely
+### 能力Eval
+1. 新しいユーザーアカウントを作成できる
+2. メールフォーマットを検証できる
+3. パスワードを安全にハッシュ化できる
 
-### Regression Evals
-1. Existing login still works
-2. Session management unchanged
-3. Logout flow intact
+### リグレッションEval
+1. 既存のログインが引き続き動作する
+2. セッション管理が変更されていない
+3. ログアウトフローが維持されている
 
-### Success Metrics
-- pass@3 > 90% for capability evals
-- pass^3 = 100% for regression evals
+### 成功メトリクス
+- 能力evalでpass@3 > 90%
+- リグレッションevalでpass^3 = 100%
 ```
 
-### 2. Implement
-Write code to pass the defined evals.
+### 2. 実装
+定義されたevalsをパスするコードを書く。
 
-### 3. Evaluate
+### 3. 評価
 ```bash
-# Run capability evals
-[Run each capability eval, record PASS/FAIL]
+# 能力evalsを実行
+[各能力evalを実行し、PASS/FAILを記録]
 
-# Run regression evals
+# リグレッションevalsを実行
 npm test -- --testPathPattern="existing"
 
-# Generate report
+# レポートを生成
 ```
 
-### 4. Report
+### 4. レポート
 ```markdown
 EVAL REPORT: feature-xyz
 ========================
 
-Capability Evals:
+能力Eval:
   create-user:     PASS (pass@1)
   validate-email:  PASS (pass@2)
   hash-password:   PASS (pass@1)
   Overall:         3/3 passed
 
-Regression Evals:
+リグレッションEval:
   login-flow:      PASS
   session-mgmt:    PASS
   logout-flow:     PASS
   Overall:         3/3 passed
 
-Metrics:
+メトリクス:
   pass@1: 67% (2/3)
   pass@3: 100% (3/3)
 
 Status: READY FOR REVIEW
 ```
 
-## Integration Patterns
+## 統合パターン
 
-### Pre-Implementation
+### 実装前
 ```
 /eval define feature-name
 ```
-Creates eval definition file at `.claude/evals/feature-name.md`
+`.claude/evals/feature-name.md`にeval定義ファイルを作成
 
-### During Implementation
+### 実装中
 ```
 /eval check feature-name
 ```
-Runs current evals and reports status
+現在のevalsを実行してステータスをレポート
 
-### Post-Implementation
+### 実装後
 ```
 /eval report feature-name
 ```
-Generates full eval report
+完全なevalレポートを生成
 
-## Eval Storage
+## Evalストレージ
 
-Store evals in project:
+プロジェクトにevalsを保存：
 ```
 .claude/
   evals/
-    feature-xyz.md      # Eval definition
-    feature-xyz.log     # Eval run history
-    baseline.json       # Regression baselines
+    feature-xyz.md      # Eval定義
+    feature-xyz.log     # Eval実行履歴
+    baseline.json       # リグレッションベースライン
 ```
 
-## Best Practices
+## ベストプラクティス
 
-1. **Define evals BEFORE coding** - Forces clear thinking about success criteria
-2. **Run evals frequently** - Catch regressions early
-3. **Track pass@k over time** - Monitor reliability trends
-4. **Use code graders when possible** - Deterministic > probabilistic
-5. **Human review for security** - Never fully automate security checks
-6. **Keep evals fast** - Slow evals don't get run
-7. **Version evals with code** - Evals are first-class artifacts
+1. **コーディング前にevalsを定義** - 成功基準についての明確な思考を強制
+2. **evalsを頻繁に実行** - リグレッションを早期にキャッチ
+3. **pass@kを経時的に追跡** - 信頼性の傾向を監視
+4. **可能な限りコードグレーダーを使用** - 決定論的 > 確率論的
+5. **セキュリティには人間レビュー** - セキュリティチェックを完全に自動化しない
+6. **evalsを高速に保つ** - 遅いevalsは実行されない
+7. **evalsをコードとバージョン管理** - evalsはファーストクラスの成果物
 
-## Example: Adding Authentication
+## 例：認証の追加
 
 ```markdown
 ## EVAL: add-authentication
 
-### Phase 1: Define (10 min)
-Capability Evals:
-- [ ] User can register with email/password
-- [ ] User can login with valid credentials
-- [ ] Invalid credentials rejected with proper error
-- [ ] Sessions persist across page reloads
-- [ ] Logout clears session
+### フェーズ1: 定義（10分）
+能力Eval:
+- [ ] ユーザーがメール/パスワードで登録できる
+- [ ] ユーザーが有効な認証情報でログインできる
+- [ ] 無効な認証情報が適切なエラーで拒否される
+- [ ] セッションがページリロード間で維持される
+- [ ] ログアウトでセッションがクリアされる
 
-Regression Evals:
-- [ ] Public routes still accessible
-- [ ] API responses unchanged
-- [ ] Database schema compatible
+リグレッションEval:
+- [ ] パブリックルートが引き続きアクセス可能
+- [ ] APIレスポンスが変更されていない
+- [ ] データベーススキーマが互換
 
-### Phase 2: Implement (varies)
-[Write code]
+### フェーズ2: 実装（可変）
+[コードを書く]
 
-### Phase 3: Evaluate
+### フェーズ3: 評価
 Run: /eval check add-authentication
 
-### Phase 4: Report
+### フェーズ4: レポート
 EVAL REPORT: add-authentication
 ==============================
-Capability: 5/5 passed (pass@3: 100%)
-Regression: 3/3 passed (pass^3: 100%)
+能力: 5/5 passed (pass@3: 100%)
+リグレッション: 3/3 passed (pass^3: 100%)
 Status: SHIP IT
 ```
